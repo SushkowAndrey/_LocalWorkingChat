@@ -1,0 +1,221 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>LocalWorkingChat</name>
+    </assembly>
+    <members>
+        <member name="T:LocalWorkingChat.App">
+            <summary>
+            Interaction logic for App.xaml
+            </summary>
+            <summary>
+            App
+            </summary>
+        </member>
+        <member name="M:LocalWorkingChat.App.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="M:LocalWorkingChat.App.Main">
+            <summary>
+            Application Entry Point.
+            </summary>
+        </member>
+        <member name="T:LocalWorkingChat.DBConnect">
+            <summary>
+            Класс для подключения к БД
+            </summary>
+        </member>
+        <member name="M:LocalWorkingChat.DBConnect.#ctor">
+            <summary>
+            Конструктор подключения к БД-при инициализации класса
+            </summary>
+        </member>
+        <member name="M:LocalWorkingChat.DBConnect.CheckRegistration(ModelData.User)">
+            <summary>
+            Проверка регистрации пользователя на сервере
+            </summary>
+            <param name="user">Информация о пользователе</param>
+            <returns>Результат проверки-пользователь зарегистрирован (true) или нет (false)</returns>
+        </member>
+        <member name="M:LocalWorkingChat.DBConnect.RegistrationUser(ModelData.User)">
+            <summary>
+            Регистрация пользователя
+            </summary>
+            <param name="user">Информация о пользователе</param>
+        </member>
+        <member name="M:LocalWorkingChat.DBConnect.GetListUsers">
+            <summary>
+            Получение списка пользователей онлайн
+            </summary>
+            <returns>Список пользователей</returns>
+        </member>
+        <member name="M:LocalWorkingChat.DBConnect.GetMessageHistory(System.String)">
+            <summary>
+            Получение истории сообщений общего чата
+            </summary>
+            <returns>Архив сообщений</returns>
+        </member>
+        <member name="T:LocalWorkingChat.MainWindow">
+            <summary>
+            Основное окно пользователя
+            </summary>
+            <summary>
+            MainWindow
+            </summary>
+        </member>
+        <member name="F:LocalWorkingChat.MainWindow.ipAddress">
+            <summary>
+            Свойство класса - ip адрес сервера
+            </summary>
+        </member>
+        <member name="F:LocalWorkingChat.MainWindow.port">
+            <summary>
+            Свойство класса - порт сервера
+            </summary>
+        </member>
+        <member name="F:LocalWorkingChat.MainWindow.client">
+            <summary>
+            Свойство класса - класс для создания клиентской программы, работающей по протоколу TCP
+            </summary>
+        </member>
+        <member name="F:LocalWorkingChat.MainWindow.stream">
+            <summary>
+            Свойство класса - взаимодействие с сервером-через данный объект можно передавать сообщения серверу или, наоборот, получать данные с сервера
+            </summary>
+        </member>
+        <member name="F:LocalWorkingChat.MainWindow.user">
+            <summary>
+            Свойство класса - модель данных пользователя
+            </summary>
+        </member>
+        <member name="F:LocalWorkingChat.MainWindow.message">
+            <summary>
+            Свойство класса - сообщение
+            </summary>
+        </member>
+        <member name="F:LocalWorkingChat.MainWindow.dbConnect">
+            <summary>
+            Класс подключения к БД
+            </summary>
+        </member>
+        <member name="F:LocalWorkingChat.MainWindow.settingParameters">
+            <summary>
+            Параметры сохранения текущего пользователя
+            </summary>
+        </member>
+        <member name="F:LocalWorkingChat.MainWindow.networkWorking">
+            <summary>
+            Класс работы с сетью
+            </summary>
+        </member>
+        <member name="M:LocalWorkingChat.MainWindow.#ctor">
+            <summary>
+            Конструктор класса инициализации окна
+            </summary>
+        </member>
+        <member name="M:LocalWorkingChat.MainWindow.OnLoaded(System.Object,System.Windows.RoutedEventArgs)">
+            <summary>
+            События при загрузке окна
+            </summary>
+        </member>
+        <member name="M:LocalWorkingChat.MainWindow.OnClosing(System.Object,System.ComponentModel.CancelEventArgs)">
+            <summary>
+            События при выходе
+            </summary>
+        </member>
+        <member name="M:LocalWorkingChat.MainWindow.GetMessageHistory">
+            <summary>
+            Получение полной истории
+            </summary>
+        </member>
+        <member name="M:LocalWorkingChat.MainWindow.GetUserData">
+            <summary>
+            Получение имени пользователя и пароля из файла при загрузке программы
+            </summary>
+        </member>
+        <member name="M:LocalWorkingChat.MainWindow.GetListUsers">
+            <summary>
+            Получение списка пользователей из БД в режиме онлайн
+            </summary>
+        </member>
+        <member name="M:LocalWorkingChat.MainWindow.UpdatePanelMessage(System.String)">
+            <summary>
+            Обновление панели сообщений
+            </summary>
+            <param name="message">Новое сообщений</param>
+        </member>
+        <member name="M:LocalWorkingChat.MainWindow.Button_registration_OnClick(System.Object,System.Windows.RoutedEventArgs)">
+            <summary>
+            Кнопка регистрации пользователя в БД
+            </summary>
+        </member>
+        <member name="M:LocalWorkingChat.MainWindow.Button_checkConnect_OnClick(System.Object,System.Windows.RoutedEventArgs)">
+            <summary>
+            Кнопка авторизации пользователя на сервере онлайн
+            </summary>
+        </member>
+        <member name="M:LocalWorkingChat.MainWindow.Button_send_OnClick(System.Object,System.Windows.RoutedEventArgs)">
+            <summary>
+            Кнопка отправки сообщения в общий чат через сервер
+            </summary>
+        </member>
+        <member name="M:LocalWorkingChat.MainWindow.ReceiveMessage">
+            <summary>
+            получение сообщений
+            </summary>
+        </member>
+        <member name="M:LocalWorkingChat.MainWindow.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:LocalWorkingChat.NetworkWorking">
+            <summary>
+            Работа клиента с сетью
+            </summary>
+        </member>
+        <member name="M:LocalWorkingChat.NetworkWorking.Connect(ModelData.User,System.Net.Sockets.TcpClient,System.Net.Sockets.NetworkStream)">
+            <summary>
+            
+            </summary>
+            <param name="user"></param>
+            <param name="client"></param>
+            <param name="stream"></param>
+        </member>
+        <member name="M:LocalWorkingChat.NetworkWorking.SendMessage``1(``0,System.Net.Sockets.NetworkStream)">
+            <summary>
+            
+            </summary>
+            <param name="message"></param>
+            <param name="stream"></param>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:LocalWorkingChat.NetworkWorking.Disconnect(System.Net.Sockets.TcpClient,System.Net.Sockets.NetworkStream)">
+            <summary>
+            
+            </summary>
+            <param name="client"></param>
+            <param name="stream"></param>
+        </member>
+        <member name="T:LocalWorkingChat.SettingParameters">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:LocalWorkingChat.SettingParameters.ImportUserData(System.String)">
+            <summary>
+            Метод получения данных пользователя из файла json
+            </summary>
+            <param name="path">Путь к файлу</param>
+            <returns>Получаем класс с текущими данными</returns>
+        </member>
+        <member name="M:LocalWorkingChat.SettingParameters.WritingFileUserData(ModelData.User)">
+            <summary>
+            Метод записи/перезаписи параметров в файл
+            </summary>
+            <param name="user">Передаем класс с данными пользователя для записи</param>
+        </member>
+    </members>
+</doc>
