@@ -11,17 +11,19 @@ namespace LocalWorkingChat
     /// </summary>
     public class DBConnect : IDBConnect
     {
-        string connectionString =
-            "Server=mysql60.hostland.ru;Database=host1323541_itstep37;Uid=host1323541_itstep;Pwd=269f43dc;";
-
+        /// <summary>
+        /// Строка подключения к БД
+        /// </summary>
+        string connectionString = "Server=mysql60.hostland.ru;Database=host1323541_itstep37;Uid=host1323541_itstep;Pwd=269f43dc;";
+        /// <summary>
+        /// Подключение к БД
+        /// </summary>
         private MySqlConnection connection;
-
         /// <summary>
         /// Конструктор подключения к БД-при инициализации класса
         /// </summary>
         public DBConnect()
         {
-            //подключение к БД
             connection = new MySqlConnection(connectionString);
         }
         /// <summary>

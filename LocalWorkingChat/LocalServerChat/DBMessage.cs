@@ -37,7 +37,7 @@ namespace LocalServerChat
         /// Регистрация сообщений пользователя
         /// </summary>
         /// <param name="message"></param>
-        public static void RegistrationMessages(Message message)
+        private static void RegistrationMessages(Message message)
         {
             try
             {

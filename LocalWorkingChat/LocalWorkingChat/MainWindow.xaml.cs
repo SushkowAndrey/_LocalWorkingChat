@@ -187,9 +187,12 @@ namespace LocalWorkingChat
                 { 
                     client.Connect(ipAddress, port); //подключение клиента к ip и порту-в данном случае к серверу
                     stream = client.GetStream(); // получаем поток
-                    networkWorking.Connect(user,client,stream);
+                    networkWorking.Connect(user,stream);
                     // запускаем новый поток для получения данных
-                    Thread receiveThread = new Thread(ReceiveMessage);
+                    Thread receiveThread = new Thread(() =>
+                    {
+                        networkWorking.ReceiveMessage(stream, GetListUsers, UpdatePanelMessage);
+                    });
                     receiveThread.Start(); //старт потока
                     Button_registration.IsEnabled = false;
                     Button_checkConnect.IsEnabled = false;
@@ -210,6 +213,23 @@ namespace LocalWorkingChat
         /// </summary>
         private void Button_send_OnClick(object sender, RoutedEventArgs e)
         {
+            SendMessages();
+        }
+        /// <summary>
+        /// Отправка сообщения при нажатии на кнопку Enter
+        /// </summary>
+        private void MainWindow_OnKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter&&Button_send.IsEnabled)
+            {
+                SendMessages();
+            }
+        }
+        /// <summary>
+        /// Метод отправки сообщений
+        /// </summary>
+        private void SendMessages()
+        {
             message.textMessage = TextBox_message.Text;
             message.dateTime = DateTime.Now.ToString(CultureInfo.InvariantCulture);
             if (message.textMessage == String.Empty)
@@ -218,43 +238,9 @@ namespace LocalWorkingChat
             }
             else
             {
+                TextBlock_warning.Text = String.Empty;
                 networkWorking.SendMessage(message,stream);
                 TextBox_message.Clear();
-            }
-        }
-        
-        
-        //TODO вывести в отдельный метод
-        /// <summary>
-        /// получение сообщений
-        /// </summary>
-        void ReceiveMessage()
-        {
-            while (true)
-            {
-                try
-                {
-                    byte[] data = new byte[64]; // буфер для получаемых данных
-                    StringBuilder builder = new StringBuilder();
-                    int bytes = 0;
-                    //получение входящих данных-возвращает значение true, если в потоке есть данные. Если их нет, возвращается false.
-                    do
-                    {
-                        //чтение получаемых данных
-                        bytes = stream.Read(data, 0, data.Length);
-                        builder.Append(Encoding.Unicode.GetString(data, 0, bytes));
-                    } while (stream.DataAvailable);
-                    string message = builder.ToString();
-                    if (message.IndexOf("вошел в чат")!=0)
-                    {
-                        GetListUsers();
-                    }
-                    UpdatePanelMessage(message);
-                }
-                catch
-                {
-                    break;
-                }
             }
         }
     }

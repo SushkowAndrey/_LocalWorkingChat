@@ -1,4 +1,5 @@
-﻿using System.Net.Sockets;
+﻿using System;
+using System.Net.Sockets;
 
 namespace ModelData
 {
@@ -7,9 +8,9 @@ namespace ModelData
     /// </summary>
     public interface INetwork
     {
-        void Connect(User user, TcpClient client, NetworkStream stream);
+        void Connect(User user, NetworkStream stream);
         void SendMessage<T>(T message, NetworkStream stream);
-        void ReceiveMessage(NetworkStream stream);
+        void ReceiveMessage(NetworkStream stream, Action getListUsers, Action <string> updatePanelMessage);
         void Disconnect(TcpClient client, NetworkStream stream);
     }
 }

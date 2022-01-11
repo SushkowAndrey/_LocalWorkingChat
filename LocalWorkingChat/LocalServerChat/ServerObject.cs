@@ -25,30 +25,34 @@ namespace LocalServerChat
         /// <summary>
         /// Метод класса - прослушивание входящих подключений
         /// </summary>
-        internal void Listen()
+        public void ListenConnect()
         {
             try
             {
                 tcpListener = new TcpListener(IPAddress.Any, 8008);//прослушивание всех входящих подключений для порта
                 tcpListener.Start();//запуск прослушивания
-                Console.WriteLine($"{DateTime.Now:u}-Сервер запущен. Ожидание подключений...");
+                Console.WriteLine($"{DateTime.Now:u}-Ожидание подключений...");
                 while (true)
                 {
                     TcpClient tcpClient = tcpListener.AcceptTcpClient();
                     ClientObject clientObject = new ClientObject(tcpClient, this);//создание экземпляра клиента
-                    Thread clientThread = new Thread(clientObject.Process);//создание потока для клиента
+                    AddConnection(clientObject);
+                    Thread clientThread = new Thread(clientObject.ProcessClient);//создание потока для клиента
+                    Console.WriteLine($"{DateTime.Now:u}-Создание потока для клиента-{clientThread.GetHashCode()}");
                     clientThread.Start();//запуск клиента
+                    ShowListUser($"Подключение клиента {clientObject.user.nameUser}");
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine($"{DateTime.Now:u}-Ошибка ListenConnect-{ex.Message}");
             }
         }
         /// <summary>
         /// Метод класса - трансляция сообщения подключенным клиентам-общая рассылка
         /// </summary>
-        internal void BroadcastMessage(Message message)
+        public void SendMessage(Message message)
         {
             string sengMessage = $"{DateTime.Now:u}-{message.sender}: {message.textMessage}";
             byte[] data = Encoding.Unicode.GetBytes(sengMessage);
@@ -61,7 +65,7 @@ namespace LocalServerChat
         /// <summary>
         /// Метод класса - трансляция сообщения подключенным клиентам-персональная рассылка
         /// </summary>
-        internal void BroadcastMessage(string message, string recipientId)
+        private void BroadcastMessage(string message, string recipientId)
         {
             byte[] data = Encoding.Unicode.GetBytes(message);
             //ищем клиента с таким же именем
@@ -76,25 +80,38 @@ namespace LocalServerChat
         /// <summary>
         /// Метод класса - добавление соединения при подключении в список
         /// </summary>
-        internal void AddConnection(ClientObject clientObject)
+        private void AddConnection(ClientObject clientObject)
         {
             clients.Add(clientObject);
         }
         /// <summary>
         /// Метод класса - удаление соединения при отключении из списка
         /// </summary>
-        internal void RemoveConnection(string nameUser)
+        public void RemoveConnection(string nameUser)
         {
             // получаем по id закрытое подключение
             ClientObject client = clients.FirstOrDefault(c => c.user.nameUser == nameUser);
             // и удаляем его из списка подключений
             if (client != null)
                 clients.Remove(client);
+            ShowListUser($"Отключение клиента {nameUser}");
+        }
+        /// <summary>
+        /// Отображение списка пользователей при изменении
+        /// </summary>
+        private void ShowListUser(string currentProccess)
+        {
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine($"{DateTime.Now:u}-Обновлен список пользователей (операция-{currentProccess})");
+            foreach (var client in clients)
+            {
+                Console.WriteLine($"Клиент онлайн-{client.user.nameUser}");
+            }
         }
         /// <summary>
         /// Метод класса - отключение всех клиентов
         /// </summary>
-        internal void Disconnect()
+        public void Disconnect()
         {
             tcpListener.Stop(); //остановка сервера
             for (int i = 0; i < clients.Count; i++)

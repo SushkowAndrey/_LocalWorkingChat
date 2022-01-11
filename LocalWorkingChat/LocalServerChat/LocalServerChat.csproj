@@ -7,6 +7,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\ModelData\ModelData.csproj" />
+      <ProjectReference Include="..\SerializationData\SerializationData.csproj" />
     </ItemGroup>
 
     <ItemGroup>

@@ -18,9 +18,15 @@ namespace SerializationData
         {
             return JsonSerializer.Serialize(data);
         }
-        /*public static string DeserializationJson <T> (T data, string json)
+        /// <summary>
+        /// Метод десереиализации
+        /// </summary>
+        /// <param name="json">Строка json</param>
+        /// <typeparam name="T">Шаблон параметра</typeparam>
+        /// <returns></returns>
+        public static T DeserializationJson <T> (string json)
         {
-            //return JsonSerializer.Deserialize<>(json);
-        }*/
+            return JsonSerializer.Deserialize<T>(json);
+        }
     }
 }

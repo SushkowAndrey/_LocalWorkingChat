@@ -27,6 +27,16 @@
             Класс для подключения к БД
             </summary>
         </member>
+        <member name="F:LocalWorkingChat.DBConnect.connectionString">
+            <summary>
+            Строка подключения к БД
+            </summary>
+        </member>
+        <member name="F:LocalWorkingChat.DBConnect.connection">
+            <summary>
+            Подключение к БД
+            </summary>
+        </member>
         <member name="M:LocalWorkingChat.DBConnect.#ctor">
             <summary>
             Конструктор подключения к БД-при инициализации класса
@@ -161,9 +171,14 @@
             Кнопка отправки сообщения в общий чат через сервер
             </summary>
         </member>
-        <member name="M:LocalWorkingChat.MainWindow.ReceiveMessage">
+        <member name="M:LocalWorkingChat.MainWindow.MainWindow_OnKeyDown(System.Object,System.Windows.Input.KeyEventArgs)">
             <summary>
-            получение сообщений
+            Отправка сообщения при нажатии на кнопку Enter
+            </summary>
+        </member>
+        <member name="M:LocalWorkingChat.MainWindow.SendMessages">
+            <summary>
+            Метод отправки сообщений
             </summary>
         </member>
         <member name="M:LocalWorkingChat.MainWindow.InitializeComponent">
@@ -176,21 +191,28 @@
             Работа клиента с сетью
             </summary>
         </member>
-        <member name="M:LocalWorkingChat.NetworkWorking.Connect(ModelData.User,System.Net.Sockets.TcpClient,System.Net.Sockets.NetworkStream)">
+        <member name="M:LocalWorkingChat.NetworkWorking.Connect(ModelData.User,System.Net.Sockets.NetworkStream)">
             <summary>
-            
+            Метод подключения к БД
             </summary>
-            <param name="user"></param>
-            <param name="client"></param>
-            <param name="stream"></param>
+            <param name="user">Пользователь</param>
+            <param name="stream">Поток</param>
         </member>
         <member name="M:LocalWorkingChat.NetworkWorking.SendMessage``1(``0,System.Net.Sockets.NetworkStream)">
             <summary>
-            
+            Метод отправки сообщений
             </summary>
-            <param name="message"></param>
-            <param name="stream"></param>
-            <typeparam name="T"></typeparam>
+            <param name="message">Сообщение</param>
+            <param name="stream">Поток</param>
+            <typeparam name="T">Тип класса сообщений</typeparam>
+        </member>
+        <member name="M:LocalWorkingChat.NetworkWorking.ReceiveMessage(System.Net.Sockets.NetworkStream,System.Action,System.Action{System.String})">
+            <summary>
+            Метод получения сообщений от сервера
+            </summary>
+            <param name="stream">Поток</param>
+            <param name="getListUsers">Делегат обновления списка пользователей</param>
+            <param name="updatePanelMessage">Делегат панели сообщений</param>
         </member>
         <member name="M:LocalWorkingChat.NetworkWorking.Disconnect(System.Net.Sockets.TcpClient,System.Net.Sockets.NetworkStream)">
             <summary>

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LocalWorkingChat"
         mc:Ignorable="d" WindowStartupLocation = "CenterScreen" ResizeMode="NoResize"
-        Title="Клиент" Height="525" Width="800">
+        Title="Клиент" Height="525" Width="800" KeyDown="MainWindow_OnKeyDown">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="25"/>

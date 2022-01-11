@@ -30,6 +30,8 @@ namespace LocalServerChat
         /// </summary>
         static void Main(string[] args)
         {
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.WriteLine($"{DateTime.Now:u}-Сервер запущен");
             try
             {
                 dbConnect.DeleteData();
@@ -39,12 +41,13 @@ namespace LocalServerChat
                 dbConnect.RegistrationUserOnline(user);
                 //запуск сервера
                 server = new ServerObject();
-                listenThread = new Thread(server.Listen);
+                listenThread = new Thread(server.ListenConnect);
                 listenThread.Start(); //старт потока
             }
             catch (Exception ex)
             {
                 server.Disconnect();
+                Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine($"Ошибка сервера-{ex.Message}");
             }
         }

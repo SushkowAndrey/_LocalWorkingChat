@@ -14,12 +14,11 @@ namespace LocalWorkingChat
     public class NetworkWorking : INetwork
     {
         /// <summary>
-        /// 
+        /// Метод подключения к БД
         /// </summary>
-        /// <param name="user"></param>
-        /// <param name="client"></param>
-        /// <param name="stream"></param>
-        public void Connect(User user, TcpClient client, NetworkStream stream)
+        /// <param name="user">Пользователь</param>
+        /// <param name="stream">Поток</param>
+        public void Connect(User user, NetworkStream stream)
         {
             //данные пользователя сериализуем в json
             string messageUser = SerializationJson(user);
@@ -29,11 +28,11 @@ namespace LocalWorkingChat
             stream.Write(data, 0, data.Length);
         }
         /// <summary>
-        /// 
+        /// Метод отправки сообщений
         /// </summary>
-        /// <param name="message"></param>
-        /// <param name="stream"></param>
-        /// <typeparam name="T"></typeparam>
+        /// <param name="message">Сообщение</param>
+        /// <param name="stream">Поток</param>
+        /// <typeparam name="T">Тип класса сообщений</typeparam>
         public void SendMessage<T>(T message, NetworkStream stream)
         {
             try
@@ -50,8 +49,13 @@ namespace LocalWorkingChat
                     "Ошибка отправки сообщения", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-        //TODO
-        public void ReceiveMessage(NetworkStream stream)
+        /// <summary>
+        /// Метод получения сообщений от сервера
+        /// </summary>
+        /// <param name="stream">Поток</param>
+        /// <param name="getListUsers">Делегат обновления списка пользователей</param>
+        /// <param name="updatePanelMessage">Делегат панели сообщений</param>
+        public void ReceiveMessage(NetworkStream stream, Action getListUsers, Action <string> updatePanelMessage)
         {
             while (true)
             {
@@ -59,7 +63,7 @@ namespace LocalWorkingChat
                 {
                     byte[] data = new byte[64]; // буфер для получаемых данных
                     StringBuilder builder = new StringBuilder();
-                    int bytes = 0;
+                    int bytes;
                     //получение входящих данных-возвращает значение true, если в потоке есть данные. Если их нет, возвращается false.
                     do
                     {
@@ -70,11 +74,9 @@ namespace LocalWorkingChat
                     string message = builder.ToString();
                     if (message.IndexOf("Авторизация")!=0)
                     {
-                        //TODO
-                        //GetListUsers();
+                        getListUsers();
                     }
-                    //TODO
-                    //UpdatePanelMessage(message);
+                    updatePanelMessage(message);
                 }
                 catch (Exception ex)
                 {

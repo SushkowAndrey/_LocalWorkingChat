@@ -20,3 +20,5 @@
 + черный список - блокировка администратором;
 + изменение состояний пользователей - активет или нет;
 + чат с определенным пользователем.
+
+Документация - D:\Programing\LocalWorkingChat\LocalWorkingChat\docfx_project\docfx.json" --serve
