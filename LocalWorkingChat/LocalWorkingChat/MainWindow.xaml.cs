@@ -20,7 +20,9 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using ModelData;
+using Tulpep.NotificationWindow;
 using static SerializationData.WorkingJson;
+using Color = System.Drawing.Color;
 
 namespace LocalWorkingChat
 {
@@ -141,6 +143,13 @@ namespace LocalWorkingChat
             // Получить диспетчер от текущего окна и использовать его для вызова кода обновления
             this.Dispatcher.BeginInvoke(DispatcherPriority.Normal, (ThreadStart)delegate()
                 {
+                    PopupNotifier popup = new PopupNotifier();
+                    popup.TitleText = "Новое уведомление";
+                    popup.ContentText = message;
+                    popup.HeaderColor = Color.Brown;
+                    popup.TitleColor = Color.Maroon;
+                    popup.BodyColor = Color.Aqua;
+                    popup.Popup(); 
                     TextBlock_messages.Text += message + '\n';
                 }
             );

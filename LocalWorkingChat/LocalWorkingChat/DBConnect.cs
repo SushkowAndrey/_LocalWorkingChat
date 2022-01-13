@@ -37,7 +37,7 @@ namespace LocalWorkingChat
             try
             {
                 connection.Open();
-                var sql = $"SELECT id FROM table_users_chat WHERE name_user = '{user.nameUser}';";
+                var sql = $"SELECT id FROM table_users_chat WHERE name_user = '{user.nameUser}' AND password = {user.password};";
                 var command = new MySqlCommand
                 {
                     Connection = connection,

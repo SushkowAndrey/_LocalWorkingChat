@@ -38,6 +38,10 @@ namespace LocalServerChat
         /// </summary>
         private Message getSetMessage = new Message();
         /// <summary>
+        /// Сериализованное сообщение из потока
+        /// </summary>
+        private string messageSerialization;
+        /// <summary>
         /// Конструктор класса
         /// </summary>
         /// <param name="tcpClient">Клиент</param>
@@ -46,6 +50,10 @@ namespace LocalServerChat
         {
             client = tcpClient;
             server = serverObject;
+            //получаем поток
+            Stream = client.GetStream();
+            messageSerialization = GetMessage();
+            user = DeserializationJson<User>(messageSerialization);
         }
         /// <summary>
         /// Процесс работы сервера - прием и направление ответа на сообщения
@@ -54,12 +62,8 @@ namespace LocalServerChat
         {
             try
             {
-                //получаем поток
-                Stream = client.GetStream();
-                string message = GetMessage();
-                user = DeserializationJson<User>(message);
                 Console.ForegroundColor = ConsoleColor.Blue;
-                message = $"{DateTime.Now:u}-{user.nameUser} вошел в чат";
+                string message = $"{DateTime.Now:u}-{user.nameUser} вошел в чат";
                 Console.WriteLine(message);
                 dbConnect.RegistrationUserOnline(user);
                 getSetMessage.sender = "Server";

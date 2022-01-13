@@ -5,6 +5,7 @@ using System.Text.Json;
 using System.Windows;
 using ModelData;
 using static SerializationData.WorkingJson;
+using Tulpep.NotificationWindow;
 
 namespace LocalWorkingChat
 {
@@ -72,21 +73,20 @@ namespace LocalWorkingChat
                         builder.Append(Encoding.Unicode.GetString(data, 0, bytes));
                     } while (stream.DataAvailable);
                     string message = builder.ToString();
-                    if (message.IndexOf("Авторизация")!=0)
-                    {
-                        getListUsers();
-                    }
+                    if (message.IndexOf("Авторизация")!=0) 
+                    { 
+                        getListUsers(); 
+                    } 
                     updatePanelMessage(message);
                 }
-                catch (Exception ex)
+                catch
                 {
-                    MessageBox.Show("3 "+ex.Message);
                     break;
                 }
             }
         }
         /// <summary>
-        /// 
+        /// Отключение от сервера и закрытие потока
         /// </summary>
         /// <param name="client"></param>
         /// <param name="stream"></param>
@@ -102,5 +102,6 @@ namespace LocalWorkingChat
             }
             Environment.Exit(0); //завершение процесса
         }
+
     }
 }

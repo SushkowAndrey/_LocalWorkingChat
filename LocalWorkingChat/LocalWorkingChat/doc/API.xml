@@ -216,7 +216,7 @@
         </member>
         <member name="M:LocalWorkingChat.NetworkWorking.Disconnect(System.Net.Sockets.TcpClient,System.Net.Sockets.NetworkStream)">
             <summary>
-            
+            Отключение от сервера и закрытие потока
             </summary>
             <param name="client"></param>
             <param name="stream"></param>
