@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Windows;
 using ModelData;
 using MySql.Data.MySqlClient;
@@ -14,7 +15,7 @@ namespace LocalWorkingChat
         /// <summary>
         /// Строка подключения к БД
         /// </summary>
-        string connectionString = "Server=mysql60.hostland.ru;Database=host1323541_itstep37;Uid=host1323541_itstep;Pwd=269f43dc;";
+        string connectionString;
         /// <summary>
         /// Подключение к БД
         /// </summary>
@@ -24,7 +25,10 @@ namespace LocalWorkingChat
         /// </summary>
         public DBConnect()
         {
+            StreamReader sr = new StreamReader("dbconnect.txt");
+            connectionString = sr.ReadToEnd();
             connection = new MySqlConnection(connectionString);
+            sr.Close();
         }
         /// <summary>
         /// Проверка регистрации пользователя на сервере
@@ -37,7 +41,7 @@ namespace LocalWorkingChat
             try
             {
                 connection.Open();
-                var sql = $"SELECT id FROM table_users_chat WHERE name_user = '{user.nameUser}' AND password = {user.password};";
+                var sql = $"SELECT id FROM table_users_chat WHERE name_user = '{user.nameUser}';";
                 var command = new MySqlCommand
                 {
                     Connection = connection,

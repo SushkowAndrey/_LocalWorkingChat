@@ -54,6 +54,7 @@ namespace LocalServerChat
         /// </summary>
         public void SendMessage(Message message)
         {
+            //TODO сериализация сообщений 
             string sengMessage = $"{DateTime.Now:u}-{message.sender}: {message.textMessage}";
             byte[] data = Encoding.Unicode.GetBytes(sengMessage);
             for (int i = 0; i < clients.Count; i++)

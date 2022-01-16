@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
 using ModelData;
@@ -14,7 +15,7 @@ namespace LocalServerChat
         /// <summary>
         /// Строка подключения
         /// </summary>
-        string connectionString = "Server=mysql60.hostland.ru;Database=host1323541_itstep37;Uid=host1323541_itstep;Pwd=269f43dc;";
+        string connectionString;
         /// <summary>
         /// Подключение к БД
         /// </summary>
@@ -24,6 +25,9 @@ namespace LocalServerChat
         /// </summary>
         public DBConnect()
         {
+            StreamReader sr = new StreamReader("dbconnect.txt");
+            connectionString = sr.ReadToEnd();
+            sr.Close();
             connection = new MySqlConnection(connectionString);
         }
         /// <summary>

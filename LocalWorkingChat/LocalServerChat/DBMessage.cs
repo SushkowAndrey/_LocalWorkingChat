@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 using ModelData;
 using MySql.Data.MySqlClient;
@@ -13,11 +14,21 @@ namespace LocalServerChat
         /// <summary>
         /// Строка подключения
         /// </summary>
-        static string connectionString = "Server=mysql60.hostland.ru;Database=host1323541_itstep37;Uid=host1323541_itstep;Pwd=269f43dc;";
+        static string connectionString;
         /// <summary>
         /// Подключение к БД
         /// </summary>
         private static MySqlConnection connection = new MySqlConnection(connectionString);
+        /// <summary>
+        /// Подключение к БД
+        /// </summary>
+        public static void ConnectDB()
+        {
+            StreamReader sr = new StreamReader("dbconnect.txt");
+            connectionString = sr.ReadToEnd();
+            sr.Close();
+            connection = new MySqlConnection(connectionString);
+        }
         /// <summary>
         /// Асинхнонная операция записи сообщения на сервер
         /// </summary>
@@ -39,6 +50,7 @@ namespace LocalServerChat
         /// <param name="message"></param>
         private static void RegistrationMessages(Message message)
         {
+            ConnectDB();
             try
             {
                 connection.Open();
