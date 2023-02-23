@@ -6,6 +6,8 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using ModelData;
+using static LocalServerChat.Setting;
+using static SerializationData.WorkingJson;
 
 namespace LocalServerChat
 {
@@ -14,6 +16,15 @@ namespace LocalServerChat
     /// </summary>
     public class ServerObject
     {
+        # region FEATURES
+        /// <summary>
+        /// Строка подключения
+        /// </summary>
+        static string connectionString;
+        /// <summary>
+        /// Свойство класса - порт сервера
+        /// </summary>
+        private const int port = 8008;
         /// <summary>
         /// Свойство класса - сервер для прослушивания
         /// </summary>
@@ -21,41 +32,46 @@ namespace LocalServerChat
         /// <summary>
         /// Свойство класса - все подключения клиентов
         /// </summary>
-        List <ClientObject> clients = new List<ClientObject>(); 
+        List <ClientObject> clients; 
+        # endregion region
+        # region PROGRAM INTERFACE
         /// <summary>
         /// Метод класса - прослушивание входящих подключений
         /// </summary>
-        public void ListenConnect()
+        public void ListenConnect(object? admin)
         {
+            clients = new List<ClientObject>();
+            connectionString = GetConnectionString();
             try
             {
-                tcpListener = new TcpListener(IPAddress.Any, 8008);//прослушивание всех входящих подключений для порта
+                tcpListener = new TcpListener(IPAddress.Any, port);//прослушивание всех входящих подключений для порта
                 tcpListener.Start();//запуск прослушивания
-                Console.WriteLine($"{DateTime.Now:u}-Ожидание подключений...");
+                ConsoleSystem($"{DateTime.Now:u}-Ожидание подключений...");
                 while (true)
                 {
                     TcpClient tcpClient = tcpListener.AcceptTcpClient();
-                    ClientObject clientObject = new ClientObject(tcpClient, this);//создание экземпляра клиента
-                    AddConnection(clientObject);
+                    ClientObject clientObject = new ClientObject(tcpClient, this,connectionString);//создание экземпляра клиента
+                    clients.Add(clientObject);
                     Thread clientThread = new Thread(clientObject.ProcessClient);//создание потока для клиента
+                    clientThread.Start(admin);//запуск клиента
+                    
                     Console.WriteLine($"{DateTime.Now:u}-Создание потока для клиента-{clientThread.GetHashCode()}");
-                    clientThread.Start();//запуск клиента
                     ShowListUser($"Подключение клиента {clientObject.user.nameUser}");
                 }
             }
             catch (Exception ex)
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"{DateTime.Now:u}-Ошибка ListenConnect-{ex.Message}");
+                ConsoleWarning($"{DateTime.Now:u}-Ошибка ListenConnect-{ex.Message}");
             }
         }
+        # endregion region
+        # region FORM METHODS
         /// <summary>
         /// Метод класса - трансляция сообщения подключенным клиентам-общая рассылка
         /// </summary>
         public void SendMessage(Message message)
         {
-            //TODO сериализация сообщений 
-            string sengMessage = $"{DateTime.Now:u}-{message.sender}: {message.textMessage}";
+            string sengMessage = SerializationJson(message);
             byte[] data = Encoding.Unicode.GetBytes(sengMessage);
             for (int i = 0; i < clients.Count; i++)
             {
@@ -66,36 +82,30 @@ namespace LocalServerChat
         /// <summary>
         /// Метод класса - трансляция сообщения подключенным клиентам-персональная рассылка
         /// </summary>
-        private void BroadcastMessage(string message, string recipientId)
+        public void BroadcastMessage(Message message, string recipientId)
         {
-            byte[] data = Encoding.Unicode.GetBytes(message);
-            //ищем клиента с таким же именем
+            string sengMessage = SerializationJson(message);
+            byte[] data = Encoding.Unicode.GetBytes(sengMessage);
             for (int i = 0; i < clients.Count; i++)
             {
-                if (clients[i].user.nameUser == recipientId) // если id клиента не равно id отправляющего
+                if (clients[i].user.id == recipientId) 
                 {
-                    clients[i].Stream.Write(data, 0, data.Length); //передача данных
+                    clients[i].Stream.Write(data, 0, data.Length);
+                    break;
                 }
             }
         }
         /// <summary>
-        /// Метод класса - добавление соединения при подключении в список
-        /// </summary>
-        private void AddConnection(ClientObject clientObject)
-        {
-            clients.Add(clientObject);
-        }
-        /// <summary>
         /// Метод класса - удаление соединения при отключении из списка
         /// </summary>
-        public void RemoveConnection(string nameUser)
+        public void RemoveConnection(User user)
         {
             // получаем по id закрытое подключение
-            ClientObject client = clients.FirstOrDefault(c => c.user.nameUser == nameUser);
+            ClientObject client = clients.FirstOrDefault(c => c.user.id == user.id);
             // и удаляем его из списка подключений
             if (client != null)
                 clients.Remove(client);
-            ShowListUser($"Отключение клиента {nameUser}");
+            ShowListUser($"Отключение клиента {user.nameUser}");
         }
         /// <summary>
         /// Отображение списка пользователей при изменении
@@ -121,5 +131,6 @@ namespace LocalServerChat
             }
             Environment.Exit(0); //завершение процесса
         }
+        # endregion region
     }
 }

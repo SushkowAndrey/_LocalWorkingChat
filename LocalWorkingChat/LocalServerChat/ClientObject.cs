@@ -1,10 +1,13 @@
 ﻿using System;
+using System.IO;
 using System.Net.Sockets;
 using System.Text;
 using System.Text.Json;
+using LocalServerChat.DBServer;
 using ModelData;
-using static LocalServerChat.DBMessage;
+using static LocalServerChat.DBServer.DBMessage;
 using static SerializationData.WorkingJson;
+using static LocalServerChat.Setting;
 
 namespace LocalServerChat
 { 
@@ -16,7 +19,7 @@ namespace LocalServerChat
         /// <summary>
         /// Свойство класса - модель данных пользователя-уникальный идентификатор клиента
         /// </summary>
-        internal User user = new User();
+        internal User user;
         /// <summary>
         /// Свойство класса - свойство Stream, хранящее поток для взаимодействия с клиентом
         /// </summary>
@@ -24,89 +27,101 @@ namespace LocalServerChat
         /// <summary>
         /// Свойство класса - создание клиента
         /// </summary>
-        TcpClient client;
+        private TcpClient client;
         /// <summary>
         /// Свойство класса - объект сервера
         /// </summary>
-        ServerObject server = new ServerObject();
+        private ServerObject server;
         /// <summary>
         /// Свойство класса - подключение к БД
         /// </summary>
-        private DBConnect dbConnect = new DBConnect();
+        private DBConnectServer dbConnectServer;
+        /// <summary>
+        /// Строка подключения
+        /// </summary>
+        private string connectionString;
         /// <summary>
         /// Свойство класса - сообщение
         /// </summary>
-        private Message getSetMessage = new Message();
+        private Message getSetMessage;
         /// <summary>
         /// Сериализованное сообщение из потока
         /// </summary>
         private string messageSerialization;
+        # region PROGRAM INTERFACE
         /// <summary>
         /// Конструктор класса
         /// </summary>
-        /// <param name="tcpClient">Клиент</param>
-        /// <param name="serverObject">Объект сервера</param>
-        public ClientObject(TcpClient tcpClient, ServerObject serverObject)
+        /// <param name="client">Клиент</param>
+        /// <param name="server">Объект сервера</param>
+        /// <param name="connectionString">Строка подключения</param>
+        public ClientObject(TcpClient client, ServerObject server, string connectionString)
         {
-            client = tcpClient;
-            server = serverObject;
-            //получаем поток
+            dbConnectServer = new DBConnectServer(connectionString);
+            this.client = client;
+            this.server = server;
+            this.connectionString = connectionString;
             Stream = client.GetStream();
             messageSerialization = GetMessage();
-            user = DeserializationJson<User>(messageSerialization);
+            user = new User();
+            user = DeserializationJson <User> (messageSerialization);
         }
         /// <summary>
         /// Процесс работы сервера - прием и направление ответа на сообщения
         /// </summary>
-        public void ProcessClient()
+        public void ProcessClient(object? adminData)
         {
-            try
+            if (adminData is User admin)
             {
-                Console.ForegroundColor = ConsoleColor.Blue;
-                string message = $"{DateTime.Now:u}-{user.nameUser} вошел в чат";
-                Console.WriteLine(message);
-                dbConnect.RegistrationUserOnline(user);
-                getSetMessage.sender = "Server";
-                getSetMessage.recipient = "Общий чат";
-                getSetMessage.textMessage = message;
-                // посылаем сообщение о входе в чат всем подключенным пользователям
-                RegistrationMessagesAsync(getSetMessage);
-                server.SendMessage(getSetMessage);
-                // в бесконечном цикле получаем сообщения от клиента
-                while (true)
+                try
                 {
-                    try
+                    string message = $"{DateTime.Now:u}-{user.nameUser} вошел в чат";
+                    getSetMessage = new Message(admin, null, message, TypeMessage.authorization);
+                    // посылаем сообщение о входе в чат всем подключенным пользователям
+                    RegistrationMessagesAsync(getSetMessage, connectionString);
+                    server.SendMessage(getSetMessage);
+
+                    ConsoleSystem(message);
+                    while (true)
                     {
-                        message = GetMessage();
-                        getSetMessage = DeserializationJson<Message>(message);
-                        getSetMessage.recipient = "Общий чат";
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        Console.WriteLine($"{DateTime.Now:u}-Отправитель - {getSetMessage.sender}, сообщение - {getSetMessage.textMessage}");
-                        //регистрация сообщения
-                        RegistrationMessagesAsync(getSetMessage);
-                        server.SendMessage(getSetMessage);
-                    }
-                    catch
-                    {
-                        dbConnect.DeleteData(user.nameUser);
-                        message = String.Format($"{DateTime.Now:u}-{user.nameUser}: покинул чат");
-                        Console.ForegroundColor = ConsoleColor.DarkRed;
-                        Console.WriteLine(message);
-                        getSetMessage.sender = "Server";
-                        getSetMessage.recipient = "Общий чат";
-                        getSetMessage.textMessage = message;
-                        RegistrationMessagesAsync(getSetMessage);
-                        server.SendMessage(getSetMessage);
-                        server.RemoveConnection(user.nameUser);
-                        break;
+                        try
+                        {
+                            getSetMessage = DeserializationJson<Message>(GetMessage());
+                            ConsoleInfo($"{getSetMessage.dateTime}-Отправитель-{getSetMessage.idSenderText}, получатель-{getSetMessage.idRecipientText}," +
+                                        $" сообщение - {getSetMessage.textMessage}");
+                            RegistrationMessagesAsync(getSetMessage, connectionString);
+                            if (getSetMessage.idRecipient == admin.id)
+                            {
+                                server.SendMessage(getSetMessage);
+                            }
+                            else
+                            {
+                                server.BroadcastMessage(getSetMessage,getSetMessage.idRecipient);
+                            }
+                        }
+                        catch(Exception ex)
+                        {
+                            //TODO
+                            dbConnectServer.DeleteUserOnline(user.id);
+                            message = $"{DateTime.Now:u}-{user.nameUser}: покинул чат";
+                            ConsoleWarning(message);
+                           
+                            getSetMessage = new Message(admin, null, message, TypeMessage.exit);
+                            RegistrationMessagesAsync(getSetMessage, connectionString);
+                            server.SendMessage(getSetMessage);
+                            server.RemoveConnection(user);
+                            break;
+                        }
                     }
                 }
-            }
-            catch(Exception e)
-            {
-                Console.WriteLine($"{DateTime.Now:u}-Ошибка ProcessClient-{e.Message}");
+                catch (Exception e)
+                {
+                    ConsoleWarning($"{DateTime.Now:u}-Ошибка ProcessClient-{e.Message}");
+                }
             }
         }
+        # endregion region
+        # region FORM METHODS
         /// <summary>
         /// Чтение входящего сообщения и преобразование в строку
         /// </summary>
@@ -134,5 +149,6 @@ namespace LocalServerChat
             if (client != null)
                 client.Close();
         }
+        # endregion region
     }
 }
