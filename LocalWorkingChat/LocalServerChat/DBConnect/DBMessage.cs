@@ -54,7 +54,8 @@ namespace LocalServerChat
             try
             {
                 connection.Open();
-                string sql = $"INSERT INTO table_message (text_message, sender, recipient, date_time) VALUES ('{message.textMessage}','{message.sender}','{message.recipient}','{DateTime.Now:u}');";
+                string sql = $"INSERT INTO table_message (text_message, sender, recipient, date_time) " +
+                             $"VALUES ('{message.textMessage}','{message.idSender}','{message.idRecipient}','{DateTime.Now:u}');";
                 var command = new MySqlCommand
                 {
                     Connection = connection,

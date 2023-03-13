@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Net.Sockets;
 using System.Text;
-using System.Text.Json;
+using System.Threading;
 using System.Windows;
+using System.Windows.Threading;
 using ModelData;
+using ModelData.Setting;
 using static SerializationData.WorkingJson;
-using Tulpep.NotificationWindow;
 
-namespace LocalWorkingChat
+namespace LocalWorkingChat.CommonModule
 {
     /// <summary>
     /// Работа клиента с сетью
@@ -50,13 +51,15 @@ namespace LocalWorkingChat
                     "Ошибка отправки сообщения", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
         /// <summary>
         /// Метод получения сообщений от сервера
         /// </summary>
         /// <param name="stream">Поток</param>
         /// <param name="getListUsers">Делегат обновления списка пользователей</param>
+        /// <param name="popupNotifierMessage">Уведомление</param>
         /// <param name="updatePanelMessage">Делегат панели сообщений</param>
-        public void ReceiveMessage(NetworkStream stream, Action getListUsers, Action <string> updatePanelMessage)
+        public void ReceiveMessage(NetworkStream stream, Action getListUsers, Action <Message> popupNotifierMessage, Action <Message> updatePanelMessage)
         {
             while (true)
             {
@@ -72,11 +75,12 @@ namespace LocalWorkingChat
                         bytes = stream.Read(data, 0, data.Length);
                         builder.Append(Encoding.Unicode.GetString(data, 0, bytes));
                     } while (stream.DataAvailable);
-                    string message = builder.ToString();
-                    if (message.IndexOf("Авторизация")!=0) 
-                    { 
-                        getListUsers(); 
+                    Message message = DeserializationJson<Message>(builder.ToString());
+                    if (message.typeMessage == TypeMessage.authorization) 
+                    {
+                        getListUsers();
                     } 
+                    popupNotifierMessage(message);
                     updatePanelMessage(message);
                 }
                 catch

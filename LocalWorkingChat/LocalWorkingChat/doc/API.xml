@@ -22,50 +22,150 @@
             Application Entry Point.
             </summary>
         </member>
-        <member name="T:LocalWorkingChat.DBConnect">
+        <member name="T:LocalWorkingChat.CommonModule.ColorConverter">
+            <summary>
+            Выделение строк цветом
+            </summary>
+        </member>
+        <member name="M:LocalWorkingChat.CommonModule.ColorConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
+            <summary>
+            Конвертация цвета
+            </summary>
+            <param name="value"></param>
+            <param name="targetType"></param>
+            <param name="parameter"></param>
+            <param name="culture"></param>
+            <returns></returns>
+        </member>
+        <member name="M:LocalWorkingChat.CommonModule.ColorConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)">
+            <summary>
+            
+            </summary>
+            <param name="value"></param>
+            <param name="targetType"></param>
+            <param name="parameter"></param>
+            <param name="culture"></param>
+            <returns></returns>
+            <exception cref="T:System.Exception"></exception>
+        </member>
+        <member name="T:LocalWorkingChat.CommonModule.DBConnectClient">
             <summary>
             Класс для подключения к БД
             </summary>
         </member>
-        <member name="F:LocalWorkingChat.DBConnect.connectionString">
+        <member name="F:LocalWorkingChat.CommonModule.DBConnectClient.connectionString">
             <summary>
             Строка подключения к БД
             </summary>
         </member>
-        <member name="F:LocalWorkingChat.DBConnect.connection">
+        <member name="F:LocalWorkingChat.CommonModule.DBConnectClient.connection">
             <summary>
             Подключение к БД
             </summary>
         </member>
-        <member name="M:LocalWorkingChat.DBConnect.#ctor">
+        <member name="M:LocalWorkingChat.CommonModule.DBConnectClient.#ctor(System.String)">
             <summary>
             Конструктор подключения к БД-при инициализации класса
             </summary>
         </member>
-        <member name="M:LocalWorkingChat.DBConnect.CheckRegistration(ModelData.User)">
+        <member name="M:LocalWorkingChat.CommonModule.DBConnectClient.CheckUserRegistration(ModelData.User)">
             <summary>
             Проверка регистрации пользователя на сервере
             </summary>
             <param name="user">Информация о пользователе</param>
             <returns>Результат проверки-пользователь зарегистрирован (true) или нет (false)</returns>
         </member>
-        <member name="M:LocalWorkingChat.DBConnect.RegistrationUser(ModelData.User)">
+        <member name="M:LocalWorkingChat.CommonModule.DBConnectClient.GetUserId(System.String,System.String)">
+            <summary>
+            Проверка регистрации пользователя на сервере
+            </summary>
+            <param name="nameUser">Имя</param>
+            <param name="password">Пароль</param>
+            <returns>Результат проверки-пользователь зарегистрирован (true) или нет (false)</returns>
+        </member>
+        <member name="M:LocalWorkingChat.CommonModule.DBConnectClient.RegistrationUser(ModelData.User)">
             <summary>
             Регистрация пользователя
             </summary>
             <param name="user">Информация о пользователе</param>
         </member>
-        <member name="M:LocalWorkingChat.DBConnect.GetListUsers">
+        <member name="M:LocalWorkingChat.CommonModule.DBConnectClient.GetListUsersOnline">
             <summary>
             Получение списка пользователей онлайн
             </summary>
             <returns>Список пользователей</returns>
         </member>
-        <member name="M:LocalWorkingChat.DBConnect.GetMessageHistory(System.String)">
+        <member name="M:LocalWorkingChat.CommonModule.DBConnectClient.GetMessageHistory(System.String,System.String)">
             <summary>
             Получение истории сообщений общего чата
             </summary>
             <returns>Архив сообщений</returns>
+        </member>
+        <member name="M:LocalWorkingChat.CommonModule.DBConnectClient.GetAdmin">
+            <summary>
+            Получение данных администратора
+            </summary>
+            <returns>Данные администратора</returns>
+        </member>
+        <member name="M:LocalWorkingChat.CommonModule.DBConnectClient.RegistrationUserOnline(ModelData.User)">
+            <summary>
+            Регистрация пользователя
+            </summary>
+            <param name="user">Пользователь</param>
+        </member>
+        <member name="T:LocalWorkingChat.CommonModule.NetworkWorking">
+            <summary>
+            Работа клиента с сетью
+            </summary>
+        </member>
+        <member name="M:LocalWorkingChat.CommonModule.NetworkWorking.Connect(ModelData.User,System.Net.Sockets.NetworkStream)">
+            <summary>
+            Метод подключения к БД
+            </summary>
+            <param name="user">Пользователь</param>
+            <param name="stream">Поток</param>
+        </member>
+        <member name="M:LocalWorkingChat.CommonModule.NetworkWorking.SendMessage``1(``0,System.Net.Sockets.NetworkStream)">
+            <summary>
+            Метод отправки сообщений
+            </summary>
+            <param name="message">Сообщение</param>
+            <param name="stream">Поток</param>
+            <typeparam name="T">Тип класса сообщений</typeparam>
+        </member>
+        <member name="M:LocalWorkingChat.CommonModule.NetworkWorking.ReceiveMessage(System.Net.Sockets.NetworkStream,System.Action,System.Action{ModelData.Message},System.Action{ModelData.Message})">
+            <summary>
+            Метод получения сообщений от сервера
+            </summary>
+            <param name="stream">Поток</param>
+            <param name="getListUsers">Делегат обновления списка пользователей</param>
+            <param name="popupNotifierMessage">Уведомление</param>
+            <param name="updatePanelMessage">Делегат панели сообщений</param>
+        </member>
+        <member name="M:LocalWorkingChat.CommonModule.NetworkWorking.Disconnect(System.Net.Sockets.TcpClient,System.Net.Sockets.NetworkStream)">
+            <summary>
+            Отключение от сервера и закрытие потока
+            </summary>
+            <param name="client"></param>
+            <param name="stream"></param>
+        </member>
+        <member name="T:LocalWorkingChat.CommonModule.SettingParameters">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:LocalWorkingChat.CommonModule.SettingParameters.ImportUserData(System.String)">
+            <summary>
+            Метод получения данных пользователя из файла json
+            </summary>
+            <param name="path">Путь к файлу</param>
+            <returns>Получаем класс с текущими данными</returns>
+        </member>
+        <member name="M:LocalWorkingChat.CommonModule.SettingParameters.WritingFileUserData(ModelData.User)">
+            <summary>
+            Метод записи/перезаписи параметров в файл
+            </summary>
+            <param name="user">Передаем класс с данными пользователя для записи</param>
         </member>
         <member name="T:LocalWorkingChat.MainWindow">
             <summary>
@@ -73,6 +173,11 @@
             </summary>
             <summary>
             MainWindow
+            </summary>
+        </member>
+        <member name="P:LocalWorkingChat.MainWindow.messages">
+            <summary>
+            Сообщения
             </summary>
         </member>
         <member name="F:LocalWorkingChat.MainWindow.ipAddress">
@@ -83,6 +188,11 @@
         <member name="F:LocalWorkingChat.MainWindow.port">
             <summary>
             Свойство класса - порт сервера
+            </summary>
+        </member>
+        <member name="F:LocalWorkingChat.MainWindow.connectionString">
+            <summary>
+            Строка подключения
             </summary>
         </member>
         <member name="F:LocalWorkingChat.MainWindow.client">
@@ -100,19 +210,19 @@
             Свойство класса - модель данных пользователя
             </summary>
         </member>
+        <member name="F:LocalWorkingChat.MainWindow.admin">
+            <summary>
+            Свойство класса - модель данных пользователя
+            </summary>
+        </member>
         <member name="F:LocalWorkingChat.MainWindow.message">
             <summary>
             Свойство класса - сообщение
             </summary>
         </member>
-        <member name="F:LocalWorkingChat.MainWindow.dbConnect">
+        <member name="F:LocalWorkingChat.MainWindow.dbConnectClient">
             <summary>
             Класс подключения к БД
-            </summary>
-        </member>
-        <member name="F:LocalWorkingChat.MainWindow.settingParameters">
-            <summary>
-            Параметры сохранения текущего пользователя
             </summary>
         </member>
         <member name="F:LocalWorkingChat.MainWindow.networkWorking">
@@ -135,9 +245,54 @@
             События при выходе
             </summary>
         </member>
-        <member name="M:LocalWorkingChat.MainWindow.GetMessageHistory">
+        <member name="M:LocalWorkingChat.MainWindow.MainWindow_OnKeyDown(System.Object,System.Windows.Input.KeyEventArgs)">
             <summary>
-            Получение полной истории
+            Отправка сообщения при нажатии на кнопку Enter
+            </summary>
+        </member>
+        <member name="M:LocalWorkingChat.MainWindow.DataGrid_usersTable_OnSelectedCellsChanged(System.Object,System.Windows.Controls.SelectedCellsChangedEventArgs)">
+            <summary>
+            Выбор получателя
+            </summary>
+        </member>
+        <member name="M:LocalWorkingChat.MainWindow.Button_registration_OnClick(System.Object,System.Windows.RoutedEventArgs)">
+            <summary>
+            Кнопка регистрации пользователя в БД
+            </summary>
+        </member>
+        <member name="M:LocalWorkingChat.MainWindow.Button_autorization_OnClick(System.Object,System.Windows.RoutedEventArgs)">
+            <summary>
+            Кнопка авторизации пользователя на сервере онлайн
+            </summary>
+        </member>
+        <member name="M:LocalWorkingChat.MainWindow.worker_DoWorkStartClient(System.Object,System.ComponentModel.DoWorkEventArgs)">
+            <summary>
+            Выполняемый метод-старт клиента
+            </summary>
+        </member>
+        <member name="M:LocalWorkingChat.MainWindow.worker_RunWorkerCompletedStartClient(System.Object,System.ComponentModel.RunWorkerCompletedEventArgs)">
+            <summary>
+            Действия после загрузки-завершение старта клиента
+            </summary>
+        </member>
+        <member name="M:LocalWorkingChat.MainWindow.FillingListUsers(System.Object,System.Timers.ElapsedEventArgs)">
+            <summary>
+            Обновление списка пользователей
+            </summary>
+        </member>
+        <member name="M:LocalWorkingChat.MainWindow.worker_DoWorkGetListUsers(System.Object,System.ComponentModel.DoWorkEventArgs)">
+            <summary>
+            Выполняемый метод
+            </summary>
+        </member>
+        <member name="M:LocalWorkingChat.MainWindow.Button_send_OnClick(System.Object,System.Windows.RoutedEventArgs)">
+            <summary>
+            Кнопка отправки сообщения в общий чат через сервер
+            </summary>
+        </member>
+        <member name="M:LocalWorkingChat.MainWindow.InitializeData">
+            <summary>
+            Инициализация данных
             </summary>
         </member>
         <member name="M:LocalWorkingChat.MainWindow.GetUserData">
@@ -150,30 +305,14 @@
             Получение списка пользователей из БД в режиме онлайн
             </summary>
         </member>
-        <member name="M:LocalWorkingChat.MainWindow.UpdatePanelMessage(System.String)">
+        <member name="M:LocalWorkingChat.MainWindow.GetMessageHistory">
             <summary>
-            Обновление панели сообщений
-            </summary>
-            <param name="message">Новое сообщений</param>
-        </member>
-        <member name="M:LocalWorkingChat.MainWindow.Button_registration_OnClick(System.Object,System.Windows.RoutedEventArgs)">
-            <summary>
-            Кнопка регистрации пользователя в БД
+            Получение полной истории
             </summary>
         </member>
-        <member name="M:LocalWorkingChat.MainWindow.Button_checkConnect_OnClick(System.Object,System.Windows.RoutedEventArgs)">
+        <member name="M:LocalWorkingChat.MainWindow.SetVisibilityAccessibility(System.Boolean)">
             <summary>
-            Кнопка авторизации пользователя на сервере онлайн
-            </summary>
-        </member>
-        <member name="M:LocalWorkingChat.MainWindow.Button_send_OnClick(System.Object,System.Windows.RoutedEventArgs)">
-            <summary>
-            Кнопка отправки сообщения в общий чат через сервер
-            </summary>
-        </member>
-        <member name="M:LocalWorkingChat.MainWindow.MainWindow_OnKeyDown(System.Object,System.Windows.Input.KeyEventArgs)">
-            <summary>
-            Отправка сообщения при нажатии на кнопку Enter
+            Установить видимость доступность
             </summary>
         </member>
         <member name="M:LocalWorkingChat.MainWindow.SendMessages">
@@ -181,63 +320,70 @@
             Метод отправки сообщений
             </summary>
         </member>
+        <member name="M:LocalWorkingChat.MainWindow.PopupNotifierMessage(ModelData.Message)">
+            <summary>
+            Обновление панели сообщений
+            </summary>
+            <param name="getMessage">Новое сообщений</param>
+        </member>
+        <member name="M:LocalWorkingChat.MainWindow.UpdatePanelMessage(ModelData.Message)">
+            <summary>
+            Добавление строки сообщения
+            </summary>
+            <param name="getMessage">Новое сообщений</param>
+        </member>
         <member name="M:LocalWorkingChat.MainWindow.InitializeComponent">
             <summary>
             InitializeComponent
             </summary>
         </member>
-        <member name="T:LocalWorkingChat.NetworkWorking">
+        <member name="T:LocalWorkingChat.Screensaver">
             <summary>
-            Работа клиента с сетью
+            Заставка
+            </summary>
+            <summary>
+            Screensaver
             </summary>
         </member>
-        <member name="M:LocalWorkingChat.NetworkWorking.Connect(ModelData.User,System.Net.Sockets.NetworkStream)">
+        <member name="M:LocalWorkingChat.Screensaver.#ctor">
             <summary>
-            Метод подключения к БД
-            </summary>
-            <param name="user">Пользователь</param>
-            <param name="stream">Поток</param>
-        </member>
-        <member name="M:LocalWorkingChat.NetworkWorking.SendMessage``1(``0,System.Net.Sockets.NetworkStream)">
-            <summary>
-            Метод отправки сообщений
-            </summary>
-            <param name="message">Сообщение</param>
-            <param name="stream">Поток</param>
-            <typeparam name="T">Тип класса сообщений</typeparam>
-        </member>
-        <member name="M:LocalWorkingChat.NetworkWorking.ReceiveMessage(System.Net.Sockets.NetworkStream,System.Action,System.Action{System.String})">
-            <summary>
-            Метод получения сообщений от сервера
-            </summary>
-            <param name="stream">Поток</param>
-            <param name="getListUsers">Делегат обновления списка пользователей</param>
-            <param name="updatePanelMessage">Делегат панели сообщений</param>
-        </member>
-        <member name="M:LocalWorkingChat.NetworkWorking.Disconnect(System.Net.Sockets.TcpClient,System.Net.Sockets.NetworkStream)">
-            <summary>
-            Отключение от сервера и закрытие потока
-            </summary>
-            <param name="client"></param>
-            <param name="stream"></param>
-        </member>
-        <member name="T:LocalWorkingChat.SettingParameters">
-            <summary>
-            
+            Конструктор
             </summary>
         </member>
-        <member name="M:LocalWorkingChat.SettingParameters.ImportUserData(System.String)">
+        <member name="M:LocalWorkingChat.Screensaver.InitializeComponent">
             <summary>
-            Метод получения данных пользователя из файла json
+            InitializeComponent
             </summary>
-            <param name="path">Путь к файлу</param>
-            <returns>Получаем класс с текущими данными</returns>
         </member>
-        <member name="M:LocalWorkingChat.SettingParameters.WritingFileUserData(ModelData.User)">
+        <member name="T:XamlGeneratedNamespace.GeneratedInternalTypeHelper">
             <summary>
-            Метод записи/перезаписи параметров в файл
+            GeneratedInternalTypeHelper
             </summary>
-            <param name="user">Передаем класс с данными пользователя для записи</param>
+        </member>
+        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.CreateInstance(System.Type,System.Globalization.CultureInfo)">
+            <summary>
+            CreateInstance
+            </summary>
+        </member>
+        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.GetPropertyValue(System.Reflection.PropertyInfo,System.Object,System.Globalization.CultureInfo)">
+            <summary>
+            GetPropertyValue
+            </summary>
+        </member>
+        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.SetPropertyValue(System.Reflection.PropertyInfo,System.Object,System.Object,System.Globalization.CultureInfo)">
+            <summary>
+            SetPropertyValue
+            </summary>
+        </member>
+        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.CreateDelegate(System.Type,System.Object,System.String)">
+            <summary>
+            CreateDelegate
+            </summary>
+        </member>
+        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.AddEventHandler(System.Reflection.EventInfo,System.Object,System.Delegate)">
+            <summary>
+            AddEventHandler
+            </summary>
         </member>
     </members>
 </doc>

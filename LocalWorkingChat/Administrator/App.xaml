@@ -1,8 +1,8 @@
-﻿<Application x:Class="LocalWorkingChat.App"
+﻿<Application x:Class="Administrator.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:LocalWorkingChat"
-             StartupUri="Screensaver.xaml">
+             xmlns:local="clr-namespace:Administrator"
+             StartupUri="MainWindow.xaml">
     <Application.Resources>
          
     </Application.Resources>

@@ -1,20 +1,21 @@
 ﻿using System.IO;
 using System.Text.Json;
 using ModelData;
+using static CryptoProtect.Encryption;
 
-namespace LocalWorkingChat
+namespace LocalWorkingChat.CommonModule
 {
     /// <summary>
     /// 
     /// </summary>
-    public class SettingParameters
+    public static class SettingParameters
     {
         /// <summary>
         /// Метод получения данных пользователя из файла json
         /// </summary>
         /// <param name="path">Путь к файлу</param>
         /// <returns>Получаем класс с текущими данными</returns>
-        public User ImportUserData(string path)
+        public static User ImportUserData(string path)
         {
             var user = new User();
             try
@@ -34,8 +35,10 @@ namespace LocalWorkingChat
         /// Метод записи/перезаписи параметров в файл
         /// </summary>
         /// <param name="user">Передаем класс с данными пользователя для записи</param>
-        public void WritingFileUserData(User user)
+        public static void WritingFileUserData(User user)
         {
+            user.nameUser = Encrypt(user.nameUser);
+            user.password = Encrypt(user.password);
             using (StreamWriter file = new StreamWriter("User.json", false))
             {
                 string json = JsonSerializer.Serialize(user);

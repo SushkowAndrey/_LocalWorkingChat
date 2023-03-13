@@ -13,21 +13,14 @@ namespace LocalServerChat
     public class DBConnect
     {
         /// <summary>
-        /// Строка подключения
-        /// </summary>
-        string connectionString;
-        /// <summary>
         /// Подключение к БД
         /// </summary>
         private MySqlConnection connection;
         /// <summary>
         /// Конструктор класса подключения
         /// </summary>
-        public DBConnect()
+        public DBConnect(string connectionString)
         {
-            StreamReader sr = new StreamReader("dbconnect.txt");
-            connectionString = sr.ReadToEnd();
-            sr.Close();
             connection = new MySqlConnection(connectionString);
         }
         /// <summary>
@@ -39,8 +32,8 @@ namespace LocalServerChat
             try
             {
                 connection.Open();
-                string sql = $"INSERT INTO table_users_chat_online (name_user, date_time) " +
-                             $"VALUES ('{user.nameUser}','{DateTime.Now:u}');";
+                string sql = $"INSERT INTO table_users_online (users_id, date_time) " +
+                             $"VALUES ('{user.id}','{DateTime.Now:s}');";
                 var command = new MySqlCommand
                 {
                     Connection = connection,
@@ -52,18 +45,18 @@ namespace LocalServerChat
             catch (Exception ex)
             {
                 connection.Close();
-                Console.WriteLine("Ошибка чтения БД RegistrationUser-Исключение: "+ex.Message+". Метод: "+ex.TargetSite+". Трассировка стека: "+ex.StackTrace);
+                Console.WriteLine("{DateTime.Now:u}-Ошибка чтения БД RegistrationUser-Исключение: "+ex.Message+". Метод: "+ex.TargetSite+". Трассировка стека: "+ex.StackTrace);
             }
         }
         /// <summary>
         /// Очистка списка всех пользователей онлайн
         /// </summary>
-        public void DeleteData()
+        public void DeleteUserOnline()
         {
             try
             {
                 connection.Open();
-                var sql = $"DELETE FROM table_users_chat_online;";
+                var sql = $"DELETE FROM table_users_online;";
                 var command = new MySqlCommand
                 {
                     Connection = connection,
@@ -75,7 +68,8 @@ namespace LocalServerChat
             catch (Exception ex)
             {
                 connection.Close();
-                Console.WriteLine("Ошибка чтения БД DeleteData-Исключение: "+ex.Message+". Метод: "+ex.TargetSite+". Трассировка стека: "+ex.StackTrace);
+                Console.WriteLine($"{DateTime.Now:u}-Ошибка чтения БД DeleteUserOnline-Исключение: "
+                                  +ex.Message+". Метод: "+ex.TargetSite+". Трассировка стека: "+ex.StackTrace);
             }
         }
         /// <summary>
@@ -101,7 +95,7 @@ namespace LocalServerChat
             catch (Exception ex)
             {
                 connection.Close();
-                Console.WriteLine("Ошибка чтения БД DeleteData-Исключение: "+ex.Message+". Метод: "+ex.TargetSite+". Трассировка стека: "+ex.StackTrace);
+                Console.WriteLine($"{DateTime.Now:u}-Ошибка чтения БД DeleteData-Исключение: "+ex.Message+". Метод: "+ex.TargetSite+". Трассировка стека: "+ex.StackTrace);
             }
         }
     }

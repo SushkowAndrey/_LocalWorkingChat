@@ -1,6 +1,14 @@
 ﻿using System;
+using System.IO;
+using System.Text.Json;
 using System.Threading;
+using LocalServerChat.DBServer;
 using ModelData;
+using ModelData.Setting;
+using static SerializationData.WorkingJson;
+using static LocalServerChat.UpdateProgram;
+using static Logging.Logging;
+using static LocalServerChat.Setting;
 
 namespace LocalServerChat
 {
@@ -10,13 +18,29 @@ namespace LocalServerChat
     class Program
     {
         /// <summary>
+        /// Строка подключения
+        /// </summary>
+        static string connectionString;
+        /// <summary>
+        /// Свойство класса - константа-версия новая при обновлении
+        /// </summary>   
+        private const string VERSIONPROGRAM = "1.0.0.03";
+        /// <summary>
+        /// Свойство класса - константа-дата обновления
+        /// </summary>  
+        private const string DATAPROGRAM = "01.02.2023";
+        /// <summary>
+        /// Свойство класса - версия программы из файла-текущая
+        /// </summary>  
+        private static VersionProgram newVersion;
+        /// <summary>
+        /// Свойство класса - версия программы из файла-текущая
+        /// </summary>  
+        private static VersionProgram currentVersion;
+        /// <summary>
         /// Класс подключения к БД
         /// </summary>
-        private static DBConnect dbConnect = new DBConnect();
-        /// <summary>
-        /// Свойство класса - модель данных пользователя
-        /// </summary>
-        private static User user = new User();
+        private static DBConnectServer dbConnectServer;
         /// <summary>
         /// Свойство класса - сервер
         /// </summary>
@@ -26,30 +50,77 @@ namespace LocalServerChat
         /// </summary>
         private static Thread listenThread;
         /// <summary>
+        /// Признак запуска сервера
+        /// </summary>
+        private static bool isStartServer = true;
+        /// <summary>
         /// Исходная точка программы сервера
         /// </summary>
         static void Main(string[] args)
         {
-            Console.ForegroundColor = ConsoleColor.Blue;
-            Console.WriteLine($"{DateTime.Now:u}-Сервер запущен");
+            connectionString = GetConnectionString();
+            dbConnectServer = new DBConnectServer(connectionString);
+            GetCurrentVersion();
+            CheckingVersion();
+            if (!isStartServer)
+            {
+                ConsoleWarning($"{DateTime.Now:u}-Запрет запуска сервера. Перезапустите программу");
+                return;
+            }
+            ConsoleSystem($"{DateTime.Now:u}-Сервер запущен");
             try
             {
-                dbConnect.DeleteData();
-                //запись сервета в таблицу онлайн
-                user.id = "01";
-                user.nameUser = "Server";
-                dbConnect.RegistrationUserOnline(user);
-                //запуск сервера
+                dbConnectServer.DeleteUserOnline();
+                User admin = dbConnectServer.GetAdmin();
+                dbConnectServer.RegistrationUserOnline(admin);
                 server = new ServerObject();
                 listenThread = new Thread(server.ListenConnect);
-                listenThread.Start(); //старт потока
+                listenThread.Start(admin);
             }
             catch (Exception ex)
             {
                 server.Disconnect();
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"Ошибка сервера-{ex.Message}");
+                ConsoleWarning($"{DateTime.Now:u}-Ошибка сервера-{ex.Message}");
             }
         }
+        # region PROGRAM INTERFACE
+        /// <summary>
+        /// Получить текущую версию
+        /// </summary>
+        private static void GetCurrentVersion()
+        {
+            using (StreamReader reader = new StreamReader("version.txt"))
+            {
+                string version = reader.ReadToEnd();
+                try
+                {
+                    currentVersion = DeserializationJson<VersionProgram>(version);
+                }
+                catch (Exception ex)
+                {
+                    isStartServer = false;
+                    ConsoleWarning($"{DateTime.Now:u}-Ошибка чтения версии-{ex.Message}");
+                    currentVersion.version = "0";
+                }
+            }
+        }
+        /// <summary>
+        /// Проверка версии в программе и версии в файле
+        /// </summary>
+        private static void CheckingVersion()
+        {
+            ConsoleSystem($"{DateTime.Now:u}-Версия Сервера-{currentVersion.version} от {currentVersion.date}");
+            newVersion = new VersionProgram();
+            newVersion.version = VERSIONPROGRAM;
+            newVersion.date = DATAPROGRAM;
+            if (VERSIONPROGRAM != currentVersion.version)
+            {
+                UpdateVersions(currentVersion, newVersion, VERSIONPROGRAM, DATAPROGRAM,connectionString);
+                isStartServer = false;
+            }
+        }
+        # endregion region
+        # region FORM METHODS
+        # endregion region
     }
 }

@@ -3,9 +3,10 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows;
 using ModelData;
+using ModelData.Setting;
 using MySql.Data.MySqlClient;
 
-namespace LocalWorkingChat
+namespace LocalWorkingChat.CommonModule
 {
     /// <summary>
     /// Класс для подключения к БД
@@ -76,7 +77,7 @@ namespace LocalWorkingChat
         /// Регистрация пользователя
         /// </summary>
         /// <param name="user">Информация о пользователе</param>
-        public void RegistrationUser(User user)
+        public bool RegistrationUser(User user)
         {
             try
             {
@@ -90,6 +91,7 @@ namespace LocalWorkingChat
                 };
                 command.ExecuteNonQuery();
                 connection.Close();
+                return true;
             }
             catch (Exception ex)
             {
@@ -97,6 +99,7 @@ namespace LocalWorkingChat
                 MessageBox.Show(
                     "Ошибка чтения БД RegistrationUser-Исключение: " + ex.Message + ". Метод: " + ex.TargetSite +
                     ". Трассировка стека: " + ex.StackTrace, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
             }
         }
         /// <summary>
@@ -166,8 +169,8 @@ namespace LocalWorkingChat
                             {
                                 id = reader.IsDBNull(0) ? null : reader.GetString(0),
                                 textMessage = reader.IsDBNull(1) ? null : reader.GetString(1),
-                                sender = reader.IsDBNull(2) ? null : reader.GetString(2),
-                                recipient = reader.IsDBNull(3) ? null : reader.GetString(3),
+                                idSender = reader.IsDBNull(2) ? null : reader.GetString(2),
+                                idRecipient = reader.IsDBNull(3) ? null : reader.GetString(3),
                                 dateTime = reader.IsDBNull(3) ? null : reader.GetString(4)
                             });
                         }
