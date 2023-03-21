@@ -209,6 +209,7 @@ namespace LocalWorkingChat
                     "Ошибка авторизации", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
+            Application.Current.Properties["user"] = user;
             ImageGif_loadinListUsers.Visibility = Visibility.Visible;
             ImageGif_loadinListMessages.Visibility = Visibility.Visible;
             IsEnabled = false;
@@ -390,16 +391,20 @@ namespace LocalWorkingChat
                 }
                 );
         }
+
         /// <summary>
         /// Добавление строки сообщения
         /// </summary>
         /// <param name="getMessage">Новое сообщений</param>
-        private void UpdatePanelMessage(Message getMessage)
+        /// <param name="addMessage">Признак добавления сообщения</param>
+        private void UpdatePanelMessage(Message getMessage, bool addMessage = true)
         {
             Dispatcher.BeginInvoke(DispatcherPriority.Normal, (ThreadStart)delegate() 
                 { 
-                    messages.Add(getMessage); 
+                    if(addMessage) 
+                        messages.Add(getMessage); 
                     DataGrid_messages.ScrollIntoView(messages[^1]);
+                    DataGrid_usersTable_OnSelectedCellsChanged(null, null);
                 }
                 );
         }

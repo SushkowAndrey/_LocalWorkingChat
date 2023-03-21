@@ -133,7 +133,7 @@
             <param name="stream">Поток</param>
             <typeparam name="T">Тип класса сообщений</typeparam>
         </member>
-        <member name="M:LocalWorkingChat.CommonModule.NetworkWorking.ReceiveMessage(System.Net.Sockets.NetworkStream,System.Action,System.Action{ModelData.Message},System.Action{ModelData.Message})">
+        <member name="M:LocalWorkingChat.CommonModule.NetworkWorking.ReceiveMessage(System.Net.Sockets.NetworkStream,System.Action,System.Action{ModelData.Message},System.Action{ModelData.Message,System.Boolean})">
             <summary>
             Метод получения сообщений от сервера
             </summary>
@@ -326,11 +326,12 @@
             </summary>
             <param name="getMessage">Новое сообщений</param>
         </member>
-        <member name="M:LocalWorkingChat.MainWindow.UpdatePanelMessage(ModelData.Message)">
+        <member name="M:LocalWorkingChat.MainWindow.UpdatePanelMessage(ModelData.Message,System.Boolean)">
             <summary>
             Добавление строки сообщения
             </summary>
             <param name="getMessage">Новое сообщений</param>
+            <param name="addMessage">Признак добавления сообщения</param>
         </member>
         <member name="M:LocalWorkingChat.MainWindow.InitializeComponent">
             <summary>

@@ -139,7 +139,7 @@
                      ScrollViewer.HorizontalScrollBarVisibility="Auto"
                      ItemsSource="{Binding messages}">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Width="1.2*" Binding="{Binding dateTime}"
+                    <DataGridTextColumn Width="1.2*" Binding="{Binding dateTime}" CanUserSort="False"
                                         FontSize="12" FontWeight="Bold" Foreground="DarkSlateGray" IsReadOnly="True">
                         <DataGridTextColumn.Header>
                             <TextBlock Text="Дата/время сообщения" TextWrapping="Wrap" TextAlignment="Center" 
@@ -158,7 +158,7 @@
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
-                    <DataGridTextColumn Width="*" Binding="{Binding idSenderText}"
+                    <DataGridTextColumn Width="*" Binding="{Binding idSenderText}" CanUserSort="False"
                                         FontSize="12" FontWeight="Bold" Foreground="DarkSlateGray" IsReadOnly="True">
                         <DataGridTextColumn.Header>
                             <TextBlock Text="Отправитель" TextWrapping="Wrap" TextAlignment="Center" 
@@ -177,10 +177,10 @@
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
-                    <DataGridTextColumn Width="1" Binding="{Binding idSender}" Visibility="Hidden"
+                    <DataGridTextColumn Width="1" Binding="{Binding idSender}" Visibility="Hidden" CanUserSort="False"
                                         Header="Отправитель id"  IsReadOnly="True">
                     </DataGridTextColumn>
-                    <DataGridTextColumn Width="*" Binding="{Binding textMessage}"
+                    <DataGridTextColumn Width="*" Binding="{Binding textMessage}" CanUserSort="False"
                                         FontSize="12" FontWeight="Bold" Foreground="DarkSlateGray" IsReadOnly="True">
                         <DataGridTextColumn.Header>
                             <TextBlock Text="Сообщение" TextWrapping="Wrap" TextAlignment="Center" 
@@ -199,10 +199,10 @@
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
-                    <DataGridTextColumn Width="1" Binding="{Binding idRecipient}" Visibility="Hidden"
+                    <DataGridTextColumn Width="1" Binding="{Binding idRecipient}" Visibility="Hidden" CanUserSort="False"
                                         Header="Получатель id"  IsReadOnly="True">
                     </DataGridTextColumn>
-                    <DataGridTextColumn Width="*" Binding="{Binding idRecipientText}"
+                    <DataGridTextColumn Width="*" Binding="{Binding idRecipientText}" CanUserSort="False"
                                         FontSize="12" FontWeight="Bold" Foreground="DarkSlateGray" IsReadOnly="True">
                         <DataGridTextColumn.Header>
                             <TextBlock Text="Получатель" TextWrapping="Wrap" TextAlignment="Center" 
@@ -221,7 +221,7 @@
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
-                    <DataGridTextColumn Header="Это входящее" Width="1" Binding="{Binding isIncoming}" Visibility="Hidden" 
+                    <DataGridTextColumn Header="Это входящее" Width="1" Binding="{Binding isIncoming}" CanUserSort="False"
                                         IsReadOnly="True">
                     </DataGridTextColumn>
                 </DataGrid.Columns>      

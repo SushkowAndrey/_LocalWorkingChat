@@ -59,8 +59,9 @@ namespace LocalWorkingChat.CommonModule
         /// <param name="getListUsers">Делегат обновления списка пользователей</param>
         /// <param name="popupNotifierMessage">Уведомление</param>
         /// <param name="updatePanelMessage">Делегат панели сообщений</param>
-        public void ReceiveMessage(NetworkStream stream, Action getListUsers, Action <Message> popupNotifierMessage, Action <Message> updatePanelMessage)
+        public void ReceiveMessage(NetworkStream stream, Action getListUsers, Action <Message> popupNotifierMessage, Action <Message, bool> updatePanelMessage)
         {
+            User user = (User) Application.Current.Properties["user"];
             while (true)
             {
                 try
@@ -76,12 +77,13 @@ namespace LocalWorkingChat.CommonModule
                         builder.Append(Encoding.Unicode.GetString(data, 0, bytes));
                     } while (stream.DataAvailable);
                     Message message = DeserializationJson<Message>(builder.ToString());
+                    message.isIncoming = true;
                     if (message.typeMessage == TypeMessage.authorization) 
                     {
                         getListUsers();
                     } 
                     popupNotifierMessage(message);
-                    updatePanelMessage(message);
+                    updatePanelMessage(message,user != null && user.id != message.idSender);
                 }
                 catch
                 {

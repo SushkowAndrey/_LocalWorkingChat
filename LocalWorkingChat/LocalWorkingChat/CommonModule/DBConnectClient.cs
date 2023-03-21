@@ -298,7 +298,7 @@ namespace LocalWorkingChat.CommonModule
                     admin.id = result.IsDBNull(0) ? null :  result.GetString(0);
                     admin.nameUser = result.IsDBNull(1) ? null :  result.GetString(1);
                     admin.isActive = !result.IsDBNull(2) && result.GetBoolean(2);
-                    admin.isActive = !result.IsDBNull(3) && result.GetBoolean(3);
+                    admin.isAdmin = !result.IsDBNull(3) && result.GetBoolean(3);
                 }
                 connection.Close();
                 if (!string.IsNullOrEmpty(admin.id))
